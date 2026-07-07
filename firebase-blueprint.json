@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user basic information, health data, and roles.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "hospital", "doctor", "pharmacy", "admin"] },
+        "hospitalId": { "type": "string", "description": "For doctors, the ID of the hospital they work in." },
+        "bloodGroup": { "type": "string", "enum": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" },
+            "address": { "type": "string" }
+          }
+        },
+        "isDonorAvailable": { "type": "boolean" },
+        "healthCard": {
+          "type": "object",
+          "properties": {
+            "allergies": { "type": "array", "items": { "type": "string" } },
+            "chronicConditions": { "type": "array", "items": { "type": "string" } },
+            "emergencyContacts": { "type": "array", "items": { "type": "object" } }
+          }
+        },
+        "points": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "BloodRequest": {
+      "title": "Emergency Blood Request",
+      "description": "Represents a request for blood donation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requesterId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "bloodGroup": { "type": "string" },
+        "unitsRequired": { "type": "number" },
+        "hospitalName": { "type": "string" },
+        "hospitalLocation": { "type": "object" },
+        "status": { "type": "string", "enum": ["open", "fulfilled", "cancelled"] },
+        "urgency": { "type": "string", "enum": ["critical", "high", "moderate", "low"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["requesterId", "bloodGroup", "status"]
+    },
+    "Medicine": {
+      "title": "Medicine Information",
+      "description": "General information about medicines available in the system.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "genericName": { "type": "string" },
+        "category": { "type": "string" },
+        "basePrice": { "type": "number" }
+      },
+      "required": ["name", "genericName"]
+    },
+    "PharmacyStock": {
+      "title": "Pharmacy Medicine Stock",
+      "description": "Stock levels and pricing and specific pharmacies.",
+      "type": "object",
+      "properties": {
+        "pharmacyId": { "type": "string" },
+        "medicineId": { "type": "string" },
+        "availability": { "type": "string", "enum": ["in-stock", "low-stock", "out-of-stock"] },
+        "price": { "type": "number" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["pharmacyId", "medicineId", "availability", "price"]
+    },
+    "HealthLog": {
+      "title": "AI Health Log",
+      "description": "Symptom analysis and AI recommendations.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "symptoms": { "type": "array", "items": { "type": "string" } },
+        "aiRecommendation": { "type": "string" },
+        "severity": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Main user collection"
+    },
+    "/blood_requests/{requestId}": {
+      "schema": "BloodRequest",
+      "description": "Emergency blood requests"
+    },
+    "/medicines/{medicineId}": {
+      "schema": "Medicine",
+      "description": "Global medicine catalog"
+    },
+    "/pharmacies/{pharmacyId}/stock/{stockId}": {
+      "schema": "PharmacyStock",
+      "description": "Subcollection for medicine stock in pharmacies"
+    },
+    "/health_logs/{logId}": {
+      "schema": "HealthLog",
+      "description": "Private health logs for users"
+    }
+  }
+}

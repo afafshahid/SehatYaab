@@ -1,0 +1,6 @@
+{
+  "name": "SehatYaab",
+  "description": "AI-Powered Emergency Healthcare & Affordable Medicine Ecosystem for real-time blood matching and medicine accessibility.",
+  "requestFramePermissions": ["geolocation", "camera"],
+  "majorCapabilities": ["AI Health Assistant", "Emergency Blood Matching", "Medicine Price Comparison"]
+}
